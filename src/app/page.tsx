@@ -1,65 +1,75 @@
-import Image from "next/image";
+"use client";
+
+import { useCallback, useState } from "react";
+import { Menu, Search } from "lucide-react";
+import { mockTracks, Track } from "@/lib/mock-data";
+import { AuthButton } from "@/components/AuthButton";
+import { Sidebar } from "@/components/Sidebar";
+import { FilterBar } from "@/components/FilterBar";
+import { TrackCard } from "@/components/TrackCard";
+import { PlayerBar } from "@/components/PlayerBar";
+import { UploadModal } from "@/components/UploadModal";
 
 export default function Home() {
+  const [tracks, setTracks] = useState<Track[]>(mockTracks);
+  const [filter, setFilter] = useState("All");
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [uploadOpen, setUploadOpen] = useState(false);
+
+  const skipTrack = useCallback((dir: 1 | -1) => {
+    if (!currentTrack) return;
+    const idx = tracks.findIndex((t) => t.id === currentTrack.id);
+    const next = tracks[(idx + dir + tracks.length) % tracks.length];
+    setCurrentTrack(next);
+  }, [currentTrack, tracks]);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="flex min-h-screen flex-col bg-surface-0">
+      {/* Header */}
+      <header className="flex h-16 shrink-0 items-center justify-between bg-surface-0 px-8">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSidebarOpen((v) => !v)}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-white hover:bg-surface-3"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <Menu size={24} />
+          </button>
+          <span className="text-xl font-bold text-white">AI Music Cloud</span>
         </div>
-      </main>
+
+        <div className="flex h-10 w-[480px] items-center gap-2 rounded-lg bg-surface-2 px-4">
+          <Search size={20} className="text-text-tertiary" />
+          <span className="text-sm text-text-tertiary">Search tracks &amp; artists...</span>
+        </div>
+
+        <AuthButton onUploadClick={() => setUploadOpen(true)} />
+      </header>
+
+      {/* Body */}
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar open={sidebarOpen} />
+
+        <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-8 pb-28">
+          <FilterBar selected={filter} onSelect={setFilter} />
+
+          <h2 className="text-xl font-bold text-white">Trending Tracks</h2>
+
+          <div className="grid grid-cols-5 gap-6">
+            {tracks.map((track) => (
+              <TrackCard key={track.id} track={track} onPlay={setCurrentTrack} />
+            ))}
+          </div>
+        </main>
+      </div>
+
+      <PlayerBar track={currentTrack} onNext={() => skipTrack(1)} onPrev={() => skipTrack(-1)} />
+
+      <UploadModal
+        open={uploadOpen}
+        onClose={() => setUploadOpen(false)}
+        onSubmit={(track) => setTracks((prev) => [track, ...prev])}
+      />
     </div>
   );
 }
