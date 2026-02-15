@@ -24,6 +24,7 @@ export function PlayerBar({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
+  const playCountedRef = useRef(false);
 
   // トラックが変わったら音源をロード
   useEffect(() => {
@@ -33,19 +34,20 @@ export function PlayerBar({
 
     async function loadAndPlay() {
       let src = "";
-      if (track!.audioUrl.startsWith("audio/")) {
+      const url = track!.audioUrl ?? "";
+      if (url.startsWith("audio/")) {
         // S3にアップロードされたファイル → Presigned URL取得
-        const res = await fetch(`/api/stream?key=${encodeURIComponent(track!.audioUrl)}`);
+        const res = await fetch(`/api/stream?key=${encodeURIComponent(url)}`);
         const data = await res.json();
         src = data.url;
       } else {
-        // ダミーデータ（/audio/1.mp3 等）
-        src = track!.audioUrl;
+        src = url;
       }
       audio.src = src;
       audio.volume = volume;
       try { await audio.play(); setPlaying(true); } catch {}
     }
+    playCountedRef.current = false;
     loadAndPlay();
 
     return () => { audio.pause(); };
@@ -56,7 +58,13 @@ export function PlayerBar({
     const audio = audioRef.current;
     if (!audio) return;
 
-    const onTime = () => setCurrentTime(audio.currentTime);
+    const onTime = () => {
+      setCurrentTime(audio.currentTime);
+      if (!playCountedRef.current && audio.duration > 0 && audio.currentTime >= audio.duration * 0.1) {
+        playCountedRef.current = true;
+        fetch(`/api/tracks/${track!.id}/play`, { method: "POST" }).catch(() => {});
+      }
+    };
     const onLoaded = () => setDuration(audio.duration || 0);
     const onEnded = () => { setPlaying(false); onNext?.(); };
 
@@ -137,7 +145,7 @@ export function PlayerBar({
       </div>
 
       {/* Right: Volume */}
-      <div className="flex w-40 items-center gap-2">
+      <div className="flex w-48 items-center gap-3">
         <Volume2 size={24} className="text-text-tertiary" />
         <div className="h-1 flex-1 cursor-pointer rounded-full bg-surface-5" onClick={changeVolume}>
           <div className="h-full rounded-full bg-accent-purple" style={{ width: `${volume * 100}%` }} />

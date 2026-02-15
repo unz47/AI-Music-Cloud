@@ -44,18 +44,39 @@ export function UploadModal({
       // 2. S3 に直接アップロード
       await fetch(url, { method: "PUT", body: file, headers: { "Content-Type": file.type } });
 
-      // 3. トラックを追加
-      const track: Track = {
-        id: crypto.randomUUID(),
+      // 3. DynamoDB に保存
+      const trackData = {
         title: title.trim(),
         artist,
+        artistImage: session?.user?.image ?? undefined,
+        userId: session?.user?.email ?? "anonymous",
         genre,
         aiTool,
+        audioKey: key,
         artworkColor: ARTWORK_COLORS[Math.floor(Math.random() * ARTWORK_COLORS.length)],
-        audioUrl: key,
         duration: Math.floor(Math.random() * 180) + 120,
+      };
+      const dbRes = await fetch("/api/tracks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(trackData),
+      });
+      const saved = await dbRes.json();
+
+      // 4. 画面に反映
+      const track: Track = {
+        id: saved.id,
+        title: saved.title,
+        artist: saved.artist,
+        artistImage: saved.artistImage,
+        genre: saved.genre,
+        aiTool: saved.aiTool,
+        artworkColor: saved.artworkColor,
+        audioUrl: saved.audioKey,
+        duration: saved.duration,
         playCount: 0,
         likeCount: 0,
+        createdAt: saved.createdAt ?? new Date().toISOString(),
       };
       onSubmit(track);
       setTitle("");

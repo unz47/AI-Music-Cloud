@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Menu, Search } from "lucide-react";
-import { mockTracks, Track } from "@/lib/mock-data";
+import { useSession } from "next-auth/react";
+import { Track } from "@/lib/mock-data";
 import { AuthButton } from "@/components/AuthButton";
 import { Sidebar } from "@/components/Sidebar";
 import { FilterBar } from "@/components/FilterBar";
@@ -11,11 +12,46 @@ import { PlayerBar } from "@/components/PlayerBar";
 import { UploadModal } from "@/components/UploadModal";
 
 export default function Home() {
-  const [tracks, setTracks] = useState<Track[]>(mockTracks);
+  const [tracks, setTracks] = useState<Track[]>([]);
   const [filter, setFilter] = useState("All");
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
+  const { data: session } = useSession();
+
+  // DynamoDB から曲一覧を取得
+  useEffect(() => {
+    fetch("/api/tracks")
+      .then((r) => r.json())
+      .then((dbTracks: Record<string, string | number>[]) => {
+        const mapped: Track[] = dbTracks.map((t) => ({
+          id: t.id as string,
+          title: t.title as string,
+          artist: t.artist as string,
+          artistImage: (t.artistImage as string) || undefined,
+          genre: t.genre as string,
+          aiTool: t.aiTool as string,
+          artworkColor: t.artworkColor as string,
+          audioUrl: t.audioKey as string,
+          duration: t.duration as number,
+          playCount: (t.playCount as number) ?? 0,
+          likeCount: (t.likeCount as number) ?? 0,
+          createdAt: (t.createdAt as string) ?? new Date().toISOString(),
+        }));
+        setTracks(mapped);
+      })
+      .catch(() => {});
+  }, []);
+
+  // いいね状態を一括取得
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    fetch(`/api/likes?userId=${encodeURIComponent(session.user.email)}`)
+      .then((r) => r.json())
+      .then((ids: string[]) => setLikedIds(new Set(ids)))
+      .catch(() => {});
+  }, [session?.user?.email]);
 
   const skipTrack = useCallback((dir: 1 | -1) => {
     if (!currentTrack) return;
@@ -57,7 +93,7 @@ export default function Home() {
 
           <div className="grid grid-cols-5 gap-6">
             {tracks.map((track) => (
-              <TrackCard key={track.id} track={track} onPlay={setCurrentTrack} />
+              <TrackCard key={track.id} track={track} onPlay={setCurrentTrack} initialLiked={likedIds.has(track.id)} />
             ))}
           </div>
         </main>
