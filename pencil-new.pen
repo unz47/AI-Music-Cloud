@@ -2856,30 +2856,68 @@
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "lUPge",
-                                      "name": "likeWrap",
-                                      "gap": 4,
+                                      "id": "EA7yh",
+                                      "name": "statsWrap",
+                                      "gap": 12,
                                       "alignItems": "center",
                                       "children": [
                                         {
-                                          "type": "icon_font",
-                                          "id": "YuF9J",
-                                          "name": "heartIcon",
-                                          "width": 16,
-                                          "height": 16,
-                                          "iconFontName": "heart",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#ec4899"
+                                          "type": "frame",
+                                          "id": "fEe9K",
+                                          "name": "playCountWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "ZaE16",
+                                              "name": "pi1",
+                                              "width": 14,
+                                              "height": 14,
+                                              "iconFontName": "play",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#727272"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "eP22K",
+                                              "name": "pn1",
+                                              "fill": "#727272",
+                                              "content": "2.4K",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         },
                                         {
-                                          "type": "text",
-                                          "id": "PgP26",
-                                          "name": "likeNum",
-                                          "fill": "#727272",
-                                          "content": "890",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
+                                          "type": "frame",
+                                          "id": "3Trxe",
+                                          "name": "likeWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "vCiGh",
+                                              "name": "hi1",
+                                              "width": 16,
+                                              "height": 16,
+                                              "iconFontName": "heart",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#ec4899"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "IaW2X",
+                                              "name": "ln1",
+                                              "fill": "#727272",
+                                              "content": "890",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         }
                                       ]
                                     }
@@ -2945,37 +2983,6 @@
                                       "fontFamily": "Inter",
                                       "fontSize": 12,
                                       "fontWeight": "normal"
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "FbBgj",
-                                      "name": "commentWrap",
-                                      "width": "fill_container",
-                                      "gap": 4,
-                                      "justifyContent": "end",
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "icon_font",
-                                          "id": "Ptzd4",
-                                          "name": "commentIcon",
-                                          "width": 14,
-                                          "height": 14,
-                                          "iconFontName": "message-circle",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#727272"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "fpHCQ",
-                                          "name": "commentNum",
-                                          "fill": "#727272",
-                                          "content": "24",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
-                                        }
-                                      ]
                                     }
                                   ]
                                 },
@@ -3125,30 +3132,68 @@
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "Y68HU",
-                                      "name": "lw2",
-                                      "gap": 4,
+                                      "id": "XTZbj",
+                                      "name": "statsWrap",
+                                      "gap": 12,
                                       "alignItems": "center",
                                       "children": [
                                         {
-                                          "type": "icon_font",
-                                          "id": "K4eJB",
-                                          "name": "hi2",
-                                          "width": 16,
-                                          "height": 16,
-                                          "iconFontName": "heart",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#ec4899"
+                                          "type": "frame",
+                                          "id": "se0Bm",
+                                          "name": "playCountWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "GBVqp",
+                                              "name": "pi2",
+                                              "width": 14,
+                                              "height": 14,
+                                              "iconFontName": "play",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#727272"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "zJubU",
+                                              "name": "pn2",
+                                              "fill": "#727272",
+                                              "content": "1.8K",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         },
                                         {
-                                          "type": "text",
-                                          "id": "D2pbq",
-                                          "name": "ln2",
-                                          "fill": "#727272",
-                                          "content": "620",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
+                                          "type": "frame",
+                                          "id": "Se4T7",
+                                          "name": "likeWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "ukXos",
+                                              "name": "hi2",
+                                              "width": 16,
+                                              "height": 16,
+                                              "iconFontName": "heart",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#ec4899"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "osTjJ",
+                                              "name": "ln2",
+                                              "fill": "#727272",
+                                              "content": "620",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         }
                                       ]
                                     }
@@ -3271,35 +3316,6 @@
                                           "fontWeight": "500"
                                         }
                                       ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "17BGN",
-                                      "name": "cw2",
-                                      "gap": 4,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "icon_font",
-                                          "id": "UBZj9",
-                                          "name": "ci2",
-                                          "width": 14,
-                                          "height": 14,
-                                          "iconFontName": "message-circle",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#727272"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "Ah1wa",
-                                          "name": "cn2",
-                                          "fill": "#727272",
-                                          "content": "12",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
-                                        }
-                                      ]
                                     }
                                   ]
                                 }
@@ -3392,30 +3408,68 @@
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "JnSkv",
-                                      "name": "lw3",
-                                      "gap": 4,
+                                      "id": "OpQ4D",
+                                      "name": "statsWrap",
+                                      "gap": 12,
                                       "alignItems": "center",
                                       "children": [
                                         {
-                                          "type": "icon_font",
-                                          "id": "ogPa3",
-                                          "name": "hi3",
-                                          "width": 16,
-                                          "height": 16,
-                                          "iconFontName": "heart",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#ec4899"
+                                          "type": "frame",
+                                          "id": "A2WZC",
+                                          "name": "playCountWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "Hrouf",
+                                              "name": "pi3",
+                                              "width": 14,
+                                              "height": 14,
+                                              "iconFontName": "play",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#727272"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "sQykI",
+                                              "name": "pn3",
+                                              "fill": "#727272",
+                                              "content": "3.2K",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         },
                                         {
-                                          "type": "text",
-                                          "id": "1V0X3",
-                                          "name": "ln3",
-                                          "fill": "#727272",
-                                          "content": "1.1K",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
+                                          "type": "frame",
+                                          "id": "imdQI",
+                                          "name": "likeWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "gngFV",
+                                              "name": "hi3",
+                                              "width": 16,
+                                              "height": 16,
+                                              "iconFontName": "heart",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#ec4899"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "z83QB",
+                                              "name": "ln3",
+                                              "fill": "#727272",
+                                              "content": "1.1K",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         }
                                       ]
                                     }
@@ -3538,35 +3592,6 @@
                                           "fontWeight": "500"
                                         }
                                       ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "3w5Nb",
-                                      "name": "cw3",
-                                      "gap": 4,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "icon_font",
-                                          "id": "eE5T1",
-                                          "name": "ci3",
-                                          "width": 14,
-                                          "height": 14,
-                                          "iconFontName": "message-circle",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#727272"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "Z57KM",
-                                          "name": "cn3",
-                                          "fill": "#727272",
-                                          "content": "47",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
-                                        }
-                                      ]
                                     }
                                   ]
                                 }
@@ -3659,30 +3684,68 @@
                                     },
                                     {
                                       "type": "frame",
-                                      "id": "1SNU9",
-                                      "name": "lw5",
-                                      "gap": 4,
+                                      "id": "tSoAd",
+                                      "name": "statsWrap",
+                                      "gap": 12,
                                       "alignItems": "center",
                                       "children": [
                                         {
-                                          "type": "icon_font",
-                                          "id": "PiC7a",
-                                          "name": "hi5",
-                                          "width": 16,
-                                          "height": 16,
-                                          "iconFontName": "heart",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#ec4899"
+                                          "type": "frame",
+                                          "id": "yR79W",
+                                          "name": "playCountWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "OS936",
+                                              "name": "pi5",
+                                              "width": 14,
+                                              "height": 14,
+                                              "iconFontName": "play",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#727272"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "uB5pR",
+                                              "name": "pn5",
+                                              "fill": "#727272",
+                                              "content": "980",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         },
                                         {
-                                          "type": "text",
-                                          "id": "ZSQOO",
-                                          "name": "ln5",
-                                          "fill": "#727272",
-                                          "content": "430",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
+                                          "type": "frame",
+                                          "id": "aZzz0",
+                                          "name": "likeWrap",
+                                          "gap": 4,
+                                          "alignItems": "center",
+                                          "children": [
+                                            {
+                                              "type": "icon_font",
+                                              "id": "BK1tG",
+                                              "name": "hi5",
+                                              "width": 16,
+                                              "height": 16,
+                                              "iconFontName": "heart",
+                                              "iconFontFamily": "lucide",
+                                              "fill": "#ec4899"
+                                            },
+                                            {
+                                              "type": "text",
+                                              "id": "kYkjU",
+                                              "name": "ln5",
+                                              "fill": "#727272",
+                                              "content": "430",
+                                              "fontFamily": "Inter",
+                                              "fontSize": 12,
+                                              "fontWeight": "500"
+                                            }
+                                          ]
                                         }
                                       ]
                                     }
@@ -3776,35 +3839,6 @@
                                           "name": "b5aT",
                                           "fill": "#a855f7",
                                           "content": "Future Bass",
-                                          "fontFamily": "Inter",
-                                          "fontSize": 12,
-                                          "fontWeight": "500"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "type": "frame",
-                                      "id": "aeZ9O",
-                                      "name": "cw5",
-                                      "gap": 4,
-                                      "alignItems": "center",
-                                      "children": [
-                                        {
-                                          "type": "icon_font",
-                                          "id": "vMhBO",
-                                          "name": "ci5",
-                                          "width": 14,
-                                          "height": 14,
-                                          "iconFontName": "message-circle",
-                                          "iconFontFamily": "lucide",
-                                          "fill": "#727272"
-                                        },
-                                        {
-                                          "type": "text",
-                                          "id": "yDqjP",
-                                          "name": "cn5",
-                                          "fill": "#727272",
-                                          "content": "3",
                                           "fontFamily": "Inter",
                                           "fontSize": 12,
                                           "fontWeight": "500"

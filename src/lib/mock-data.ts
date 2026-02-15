@@ -4,6 +4,7 @@ export type Track = {
   artist: string;
   genre: string;
   artworkColor: string;
+  artworkKey?: string;
   audioUrl: string;
   duration: number;
   playCount: number;

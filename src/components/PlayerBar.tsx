@@ -109,7 +109,11 @@ export function PlayerBar({
     <div className="fixed bottom-0 left-0 right-0 z-50 flex h-20 items-center justify-between bg-surface-2 px-8">
       {/* Left: Track info */}
       <div className="flex w-[280px] items-center gap-3">
-        <div className="h-12 w-12 shrink-0 rounded-lg" style={{ backgroundColor: track.artworkColor }} />
+        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg" style={{ backgroundColor: track.artworkKey ? undefined : track.artworkColor }}>
+          {track.artworkKey && (
+            <img src={`/api/stream?key=${encodeURIComponent(track.artworkKey)}&redirect=1`} alt="" className="h-full w-full object-cover" />
+          )}
+        </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-text-primary">{track.title}</p>
           <p className="truncate text-xs text-text-tertiary">{track.artist}</p>

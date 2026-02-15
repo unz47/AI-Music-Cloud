@@ -33,6 +33,7 @@ export default function Home() {
           genre: t.genre as string,
           aiTool: t.aiTool as string,
           artworkColor: t.artworkColor as string,
+          artworkKey: (t.artworkKey as string) || undefined,
           audioUrl: t.audioKey as string,
           duration: t.duration as number,
           playCount: (t.playCount as number) ?? 0,

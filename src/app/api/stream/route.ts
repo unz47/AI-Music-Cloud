@@ -11,11 +11,17 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "key required" }, { status: 400 });
   }
 
+  const redirect = req.nextUrl.searchParams.get("redirect");
+
   const url = await getSignedUrl(
     s3,
     new GetObjectCommand({ Bucket: BUCKET, Key: key }),
     { expiresIn: 3600 },
   );
+
+  if (redirect) {
+    return NextResponse.redirect(url);
+  }
 
   return NextResponse.json({ url });
 }

@@ -61,9 +61,12 @@ export function TrackCard({
       {/* Artwork */}
       <div
         className="relative flex h-[200px] w-full items-center justify-center"
-        style={{ backgroundColor: track.artworkColor }}
+        style={{ backgroundColor: track.artworkKey ? undefined : track.artworkColor }}
       >
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-purple text-white opacity-0 transition-opacity group-hover:opacity-100">
+        {track.artworkKey && (
+          <img src={`/api/stream?key=${encodeURIComponent(track.artworkKey)}&redirect=1`} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        )}
+        <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-accent-purple text-white opacity-0 transition-opacity group-hover:opacity-100">
           <Play size={36} fill="white" />
         </span>
       </div>

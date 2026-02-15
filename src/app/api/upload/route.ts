@@ -12,7 +12,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "fileName and contentType required" }, { status: 400 });
   }
 
-  const key = `audio/${Date.now()}-${fileName}`;
+  const prefix = contentType.startsWith("image/") ? "artwork" : "audio";
+  const key = `${prefix}/${Date.now()}-${fileName}`;
 
   const url = await getSignedUrl(
     s3,
