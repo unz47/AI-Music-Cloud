@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Menu, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Track } from "@/lib/mock-data";
@@ -18,6 +18,8 @@ export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
+  const togglePlayRef = useRef<(() => void) | null>(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const { data: session } = useSession();
 
   // DynamoDB から曲一覧を取得
@@ -94,13 +96,13 @@ export default function Home() {
 
           <div className="grid grid-cols-5 gap-6">
             {tracks.map((track) => (
-              <TrackCard key={track.id} track={track} onPlay={setCurrentTrack} initialLiked={likedIds.has(track.id)} />
+              <TrackCard key={track.id} track={track} onPlay={setCurrentTrack} onPause={() => togglePlayRef.current?.()} initialLiked={likedIds.has(track.id)} isCurrent={currentTrack?.id === track.id} isPlaying={currentTrack?.id === track.id && isAudioPlaying} />
             ))}
           </div>
         </main>
       </div>
 
-      <PlayerBar track={currentTrack} onNext={() => skipTrack(1)} onPrev={() => skipTrack(-1)} />
+      <PlayerBar track={currentTrack} onNext={() => skipTrack(1)} onPrev={() => skipTrack(-1)} toggleRef={togglePlayRef} onPlayingChange={setIsAudioPlaying} />
 
       <UploadModal
         open={uploadOpen}

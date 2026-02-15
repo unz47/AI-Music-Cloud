@@ -14,16 +14,23 @@ export function PlayerBar({
   track,
   onNext,
   onPrev,
+  toggleRef,
+  onPlayingChange,
 }: {
   track: Track | null;
   onNext?: () => void;
   onPrev?: () => void;
+  toggleRef?: React.MutableRefObject<(() => void) | null>;
+  onPlayingChange?: (playing: boolean) => void;
 }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
+
+  // playing 状態を親に通知
+  useEffect(() => { onPlayingChange?.(playing); }, [playing, onPlayingChange]);
   const playCountedRef = useRef(false);
 
   // トラックが変わったら音源をロード
@@ -84,6 +91,11 @@ export function PlayerBar({
     if (playing) { audio.pause(); setPlaying(false); }
     else { audio.play(); setPlaying(true); }
   }, [playing]);
+
+  // 外部からtogglePlayを呼べるようにする
+  useEffect(() => {
+    if (toggleRef) toggleRef.current = togglePlay;
+  }, [toggleRef, togglePlay]);
 
   const seek = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const audio = audioRef.current;

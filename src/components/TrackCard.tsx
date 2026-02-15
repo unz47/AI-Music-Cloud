@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Play, Heart, Headphones } from "lucide-react";
+import { Play, Pause, Heart, Headphones } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Track } from "@/lib/mock-data";
 
@@ -24,11 +24,17 @@ const AVATAR_COLORS = ["#a855f7", "#22d3ee", "#ec4899", "#84cc16"];
 export function TrackCard({
   track,
   onPlay,
+  onPause,
   initialLiked = false,
+  isPlaying = false,
+  isCurrent = false,
 }: {
   track: Track;
   onPlay: (track: Track) => void;
+  onPause?: () => void;
   initialLiked?: boolean;
+  isPlaying?: boolean;
+  isCurrent?: boolean;
 }) {
   const { data: session } = useSession();
   const [liked, setLiked] = useState(initialLiked);
@@ -55,8 +61,8 @@ export function TrackCard({
 
   return (
     <button
-      onClick={() => onPlay(track)}
-      className="group flex flex-col overflow-hidden rounded-xl bg-surface-1 text-left transition-all hover:shadow-card-hover"
+      onClick={() => isCurrent ? onPause?.() : onPlay(track)}
+      className={`group flex flex-col overflow-hidden rounded-xl bg-surface-1 text-left transition-all hover:shadow-card-hover ${isCurrent ? "ring-2 ring-accent-purple" : ""}`}
     >
       {/* Artwork */}
       <div
@@ -67,7 +73,7 @@ export function TrackCard({
           <img src={`/api/stream?key=${encodeURIComponent(track.artworkKey)}&redirect=1`} alt="" className="absolute inset-0 h-full w-full object-cover" />
         )}
         <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-accent-purple text-white opacity-0 transition-opacity group-hover:opacity-100">
-          <Play size={36} fill="white" />
+          {isPlaying ? <Pause size={36} fill="white" /> : <Play size={36} fill="white" />}
         </span>
       </div>
 
