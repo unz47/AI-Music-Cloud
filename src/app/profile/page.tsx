@@ -7,12 +7,9 @@ import { Track } from "@/lib/mock-data";
 import { AppShell } from "@/components/AppShell";
 import { TrackCard } from "@/components/TrackCard";
 
-type Tab = "Tracks" | "Liked" | "Playlists";
-
 export default function ProfilePage() {
   const { data: session } = useSession();
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [tab, setTab] = useState<Tab>("Tracks");
 
   const email = session?.user?.email ?? "";
   const name = session?.user?.name ?? "User";
@@ -43,8 +40,6 @@ export default function ProfilePage() {
       })
       .catch(() => {});
   }, [email]);
-
-  const TABS: Tab[] = ["Tracks", "Liked", "Playlists"];
 
   return (
     <AppShell tracks={tracks}>
@@ -102,48 +97,24 @@ export default function ProfilePage() {
             ))}
           </div>
 
-          {/* Tabs */}
-          <div className="flex gap-6 border-b border-white/5">
-            {TABS.map((t) => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`pb-3 text-sm font-semibold ${
-                  tab === t
-                    ? "border-b-2 border-accent-purple text-white"
-                    : "text-text-tertiary hover:text-white"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {/* Content */}
-          {tab === "Tracks" && (
-            tracks.length === 0 ? (
-              <p className="text-sm text-text-tertiary">No tracks yet.</p>
-            ) : (
-              <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
-                {tracks.map((track) => (
-                  <TrackCard
-                    key={track.id}
-                    track={track}
-                    onPlay={setCurrentTrack}
-                    onPause={togglePlay}
-                    initialLiked={likedIds.has(track.id)}
-                    isCurrent={currentTrack?.id === track.id}
-                    isPlaying={currentTrack?.id === track.id && isAudioPlaying}
-                  />
-                ))}
-              </div>
-            )
-          )}
-          {tab === "Liked" && (
-            <p className="text-sm text-text-tertiary">Liked tracks will appear here.</p>
-          )}
-          {tab === "Playlists" && (
-            <p className="text-sm text-text-tertiary">Playlists coming soon.</p>
+          {/* Tracks */}
+          <h2 className="text-lg font-bold text-white border-b border-white/5 pb-3">Tracks</h2>
+          {tracks.length === 0 ? (
+            <p className="text-sm text-text-tertiary">No tracks yet.</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
+              {tracks.map((track) => (
+                <TrackCard
+                  key={track.id}
+                  track={track}
+                  onPlay={setCurrentTrack}
+                  onPause={togglePlay}
+                  initialLiked={likedIds.has(track.id)}
+                  isCurrent={currentTrack?.id === track.id}
+                  isPlaying={currentTrack?.id === track.id && isAudioPlaying}
+                />
+              ))}
+            </div>
           )}
         </>
       )}
