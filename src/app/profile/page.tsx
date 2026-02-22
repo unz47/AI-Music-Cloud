@@ -13,13 +13,13 @@ export default function ProfilePage() {
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
 
-  const email = session?.user?.email ?? "";
   const name = session?.user?.name ?? "User";
   const image = session?.user?.image;
 
+  // artist名でトラック取得（メアドをURLに含めない）
   useEffect(() => {
-    if (!email) return;
-    fetch(`/api/tracks/user?userId=${encodeURIComponent(email)}`)
+    if (!session?.user?.name) return;
+    fetch(`/api/tracks/by-artist?name=${encodeURIComponent(session.user.name)}`)
       .then((r) => r.json())
       .then((dbTracks: Record<string, string | number>[]) => {
         setTracks(
@@ -41,18 +41,19 @@ export default function ProfilePage() {
         );
       })
       .catch(() => {});
-  }, [email]);
+  }, [session?.user?.name]);
 
+  // フォロワー数取得（認証済みAPIで自分のカウントを取得）
   useEffect(() => {
-    if (!email) return;
-    fetch(`/api/follows?countFor=${encodeURIComponent(email)}`)
+    if (!session?.user?.name) return;
+    fetch(`/api/follows/count-by-artist?name=${encodeURIComponent(session.user.name)}`)
       .then((r) => r.json())
       .then((d: { followers: number; following: number }) => {
         setFollowers(d.followers);
         setFollowing(d.following);
       })
       .catch(() => {});
-  }, [email]);
+  }, [session?.user?.name]);
 
   return (
     <AppShell tracks={tracks}>
@@ -68,10 +69,7 @@ export default function ProfilePage() {
               </span>
             )}
             <div className="flex flex-1 flex-col gap-3">
-              <div>
-                <h1 className="text-2xl font-bold text-white">{name}</h1>
-                <p className="text-sm text-text-tertiary">@{email.split("@")[0]}</p>
-              </div>
+              <h1 className="text-2xl font-bold text-white">{name}</h1>
               <p className="text-sm text-text-secondary">
                 AI music creator & curator. Exploring the boundaries of AI-generated sound.
               </p>

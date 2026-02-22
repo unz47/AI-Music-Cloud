@@ -3,36 +3,14 @@ import { DeleteCommand, PutCommand, QueryCommand, GetCommand, ScanCommand } from
 import { db, TABLE } from "@/lib/db";
 import { getAuthUser, isUnauthorized } from "@/lib/auth-guard";
 
-// GET /api/follows?countFor=xxx → { followers, following }（認証不要）
 // GET /api/follows?followeeId=xxx → フォロー状態チェック（認証必要: 自分のfollowerIdを使用）
 // GET /api/follows?list=1 → 自分のフォロー中一覧（認証必要）
 export async function GET(req: NextRequest) {
   const p = req.nextUrl.searchParams;
-  const countFor = p.get("countFor");
   const followeeId = p.get("followeeId");
   const list = p.get("list");
 
-  // カウント取得（認証不要）
-  if (countFor) {
-    const [{ Count: followers = 0 }, { Count: following = 0 }] = await Promise.all([
-      db.send(new QueryCommand({
-        TableName: TABLE.follows,
-        IndexName: "followeeId-index",
-        KeyConditionExpression: "followeeId = :id",
-        ExpressionAttributeValues: { ":id": countFor },
-        Select: "COUNT",
-      })),
-      db.send(new QueryCommand({
-        TableName: TABLE.follows,
-        KeyConditionExpression: "followerId = :id",
-        ExpressionAttributeValues: { ":id": countFor },
-        Select: "COUNT",
-      })),
-    ]);
-    return NextResponse.json({ followers, following });
-  }
-
-  // 以降は認証必須
+  // 認証必須
   const user = await getAuthUser();
   if (isUnauthorized(user)) return user;
 

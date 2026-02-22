@@ -37,5 +37,6 @@ export async function POST(req: NextRequest) {
     createdAt: new Date().toISOString(),
   };
   await db.send(new PutCommand({ TableName: TABLE.tracks, Item: item }));
-  return NextResponse.json(item, { status: 201 });
+  const { userId: _uid, ...safe } = item;
+  return NextResponse.json(safe, { status: 201 });
 }
