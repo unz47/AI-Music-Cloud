@@ -1,18 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DeleteCommand, PutCommand, QueryCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { db, TABLE } from "@/lib/db";
+import { getAuthUser, isUnauthorized } from "@/lib/auth-guard";
 
-// GET /api/follows?followerId=xxx  → フォロー中一覧
-// GET /api/follows?followeeId=xxx  → フォロワー一覧
-// GET /api/follows?followerId=xxx&followeeId=yyy → フォロー状態チェック
-// GET /api/follows?countFor=xxx → { followers, following }
+// GET /api/follows?countFor=xxx → { followers, following }（認証不要）
+// GET /api/follows?followeeId=xxx → フォロー状態チェック（認証必要: 自分のfollowerIdを使用）
+// GET /api/follows?list=1 → 自分のフォロー中一覧（認証必要）
 export async function GET(req: NextRequest) {
   const p = req.nextUrl.searchParams;
-  const followerId = p.get("followerId");
-  const followeeId = p.get("followeeId");
   const countFor = p.get("countFor");
+  const followeeId = p.get("followeeId");
+  const list = p.get("list");
 
-  // カウント取得
+  // カウント取得（認証不要）
   if (countFor) {
     const [{ Count: followers = 0 }, { Count: following = 0 }] = await Promise.all([
       db.send(new QueryCommand({
@@ -32,24 +32,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ followers, following });
   }
 
-  // フォロー状態チェック
-  if (followerId && followeeId) {
+  // 以降は認証必須
+  const user = await getAuthUser();
+  if (isUnauthorized(user)) return user;
+
+  // フォロー状態チェック（自分→対象）
+  if (followeeId) {
     const { Item } = await db.send(new GetCommand({
       TableName: TABLE.follows,
-      Key: { followerId, followeeId },
+      Key: { followerId: user.email, followeeId },
     }));
     return NextResponse.json({ following: !!Item });
   }
 
-  // フォロー中一覧（artist名付き）
-  if (followerId) {
+  // 自分のフォロー中一覧
+  if (list) {
     const { Items = [] } = await db.send(new QueryCommand({
       TableName: TABLE.follows,
       KeyConditionExpression: "followerId = :id",
-      ExpressionAttributeValues: { ":id": followerId },
+      ExpressionAttributeValues: { ":id": user.email },
     }));
 
-    // followeeIdからartist名を取得
     const { Items: allTracks = [] } = await db.send(new ScanCommand({
       TableName: TABLE.tracks,
       ProjectionExpression: "userId, artist",
@@ -61,33 +64,27 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // followeeId（メアド）をレスポンスから除外（🟡5の修正）
     const result = Items.map((item) => ({
-      ...item,
-      artistName: userArtistMap.get(item.followeeId as string) ?? (item.followeeId as string).split("@")[0],
+      artistName: userArtistMap.get(item.followeeId as string) ?? "Unknown",
     }));
     return NextResponse.json(result);
-  }
-
-  // フォロワー一覧
-  if (followeeId) {
-    const { Items = [] } = await db.send(new QueryCommand({
-      TableName: TABLE.follows,
-      IndexName: "followeeId-index",
-      KeyConditionExpression: "followeeId = :id",
-      ExpressionAttributeValues: { ":id": followeeId },
-    }));
-    return NextResponse.json(Items);
   }
 
   return NextResponse.json([]);
 }
 
-// POST /api/follows  { followerId, followeeId } → トグル
+// POST /api/follows { followeeId } → トグル（認証必須、followerIdはセッションから）
 export async function POST(req: NextRequest) {
-  const { followerId, followeeId } = await req.json();
-  if (!followerId || !followeeId || followerId === followeeId) {
+  const user = await getAuthUser();
+  if (isUnauthorized(user)) return user;
+
+  const { followeeId } = await req.json();
+  if (!followeeId || user.email === followeeId) {
     return NextResponse.json({ error: "invalid" }, { status: 400 });
   }
+
+  const followerId = user.email;
 
   const { Item } = await db.send(new GetCommand({
     TableName: TABLE.follows,

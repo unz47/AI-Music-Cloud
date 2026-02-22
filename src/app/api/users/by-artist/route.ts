@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { db, TABLE } from "@/lib/db";
 
-// GET /api/users/by-artist?name=xxx → artist名からuserIdを逆引き
+// GET /api/users/by-artist?name=xxx → artist名からプロフィール情報（userIdは返さない）
 export async function GET(req: NextRequest) {
   const name = req.nextUrl.searchParams.get("name");
   if (!name) return NextResponse.json({ error: "name required" }, { status: 400 });
@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
 
   if (Items.length === 0) return NextResponse.json({ error: "not found" }, { status: 404 });
 
-  const userId = Items[0].userId as string;
   const artistImage = Items[0].artistImage as string | null;
 
-  return NextResponse.json({ userId, artist: name, artistImage });
+  // userIdは返さない。内部IDはサーバーサイドでのみ使用
+  return NextResponse.json({ artist: name, artistImage });
 }

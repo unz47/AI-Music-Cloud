@@ -55,8 +55,6 @@ export function TrackCard({
     if (!session?.user?.email) return;
     const res = await fetch(`/api/tracks/${track.id}/like`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: session.user.email }),
     });
     const { liked: nowLiked } = await res.json();
     setLiked(nowLiked);

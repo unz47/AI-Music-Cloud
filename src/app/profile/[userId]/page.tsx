@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Edit3, Share2, Music, Users, Heart, UserPlus, UserCheck } from "lucide-react";
+import { Music, Users, Heart, UserPlus, UserCheck } from "lucide-react";
 import { Track } from "@/lib/mock-data";
 import { AppShell } from "@/components/AppShell";
 import { TrackCard } from "@/components/TrackCard";
@@ -12,22 +12,20 @@ export default function UserProfilePage() {
   const { userId: rawParam } = useParams<{ userId: string }>();
   const artistName = decodeURIComponent(rawParam);
   const { data: session } = useSession();
-  const myEmail = session?.user?.email ?? "";
 
   const [tracks, setTracks] = useState<Track[]>([]);
-  const [profileUserId, setProfileUserId] = useState<string | null>(null);
+  const [artistImage, setArtistImage] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
-  const isOwnProfile = !!profileUserId && myEmail === profileUserId;
-
-  // artist名からuserIdを逆引き & トラック取得
+  // プロフィール情報 & トラック取得
   useEffect(() => {
     fetch(`/api/users/by-artist?name=${encodeURIComponent(artistName)}`)
       .then((r) => r.json())
-      .then((d: { userId: string }) => {
-        if (d.userId) setProfileUserId(d.userId);
+      .then((d: { artist: string; artistImage: string | null }) => {
+        setArtistImage(d.artistImage);
       })
       .catch(() => {});
 
@@ -49,44 +47,42 @@ export default function UserProfilePage() {
             playCount: (t.playCount as number) ?? 0,
             likeCount: (t.likeCount as number) ?? 0,
             createdAt: (t.createdAt as string) ?? new Date().toISOString(),
-            userId: (t.userId as string) || undefined,
           }))
         );
       })
       .catch(() => {});
   }, [artistName]);
 
-  // フォロー状態 & カウント取得
+  // 自分のプロフィールかチェック
   useEffect(() => {
-    if (!profileUserId) return;
+    const myName = session?.user?.name;
+    setIsOwnProfile(!!myName && myName === artistName);
+  }, [session?.user?.name, artistName]);
 
-    fetch(`/api/follows?countFor=${encodeURIComponent(profileUserId)}`)
+  // フォロー状態取得
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    fetch(`/api/follows/by-artist?artistName=${encodeURIComponent(artistName)}`)
       .then((r) => r.json())
-      .then((d: { followers: number; following: number }) => {
-        setFollowers(d.followers);
-        setFollowing(d.following);
-      })
+      .then((d: { following: boolean }) => setIsFollowing(d.following))
       .catch(() => {});
+  }, [artistName, session?.user?.email]);
 
-    if (myEmail && !isOwnProfile) {
-      fetch(`/api/follows?followerId=${encodeURIComponent(myEmail)}&followeeId=${encodeURIComponent(profileUserId)}`)
-        .then((r) => r.json())
-        .then((d: { following: boolean }) => setIsFollowing(d.following))
-        .catch(() => {});
-    }
-  }, [profileUserId, myEmail, isOwnProfile]);
+  // フォロワー数はcountFor APIで（artist名→userIdの解決はサーバーサイドで行うべきだが、
+  // 現状countForはuserIdベース。artist名ベースのcount APIを追加するか、トラック数で代用）
+  // → 簡易的にトラック数のみ表示、followers/followingは別途対応
 
   const toggleFollow = useCallback(async () => {
-    if (!myEmail || !profileUserId) return;
-    const res = await fetch("/api/follows", {
+    if (!session?.user?.email) return;
+    const res = await fetch("/api/follows/by-artist", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followerId: myEmail, followeeId: profileUserId }),
+      body: JSON.stringify({ artistName }),
     });
     const { following: nowFollowing } = await res.json();
     setIsFollowing(nowFollowing);
     setFollowers((c) => c + (nowFollowing ? 1 : -1));
-  }, [myEmail, profileUserId]);
+  }, [session?.user?.email, artistName]);
 
   return (
     <AppShell tracks={tracks}>
@@ -94,29 +90,18 @@ export default function UserProfilePage() {
         <>
           {/* Hero Section */}
           <div className="flex items-start gap-8 rounded-2xl bg-surface-1 p-8">
-            <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-accent-purple text-3xl font-bold text-white">
-              {artistName[0]?.toUpperCase()}
-            </span>
+            {artistImage ? (
+              <img src={artistImage} alt={artistName} className="h-24 w-24 shrink-0 rounded-full object-cover" />
+            ) : (
+              <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-accent-purple text-3xl font-bold text-white">
+                {artistName[0]?.toUpperCase()}
+              </span>
+            )}
             <div className="flex flex-1 flex-col gap-3">
-              <div>
-                <h1 className="text-2xl font-bold text-white">{artistName}</h1>
-              </div>
-              <p className="text-sm text-text-secondary">
-                AI music creator & curator.
-              </p>
-              <div className="flex gap-3">
-                {isOwnProfile ? (
-                  <>
-                    <button className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-surface-3">
-                      <Edit3 size={16} />
-                      Edit Profile
-                    </button>
-                    <button className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-surface-3">
-                      <Share2 size={16} />
-                      Share
-                    </button>
-                  </>
-                ) : (
+              <h1 className="text-2xl font-bold text-white">{artistName}</h1>
+              <p className="text-sm text-text-secondary">AI music creator & curator.</p>
+              {!isOwnProfile && session?.user && (
+                <div className="flex gap-3">
                   <button
                     onClick={toggleFollow}
                     className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
@@ -128,25 +113,18 @@ export default function UserProfilePage() {
                     {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
                     {isFollowing ? "Following" : "Follow"}
                   </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Stats */}
           <div className="flex gap-8">
-            {[
-              { label: "Tracks", value: tracks.length, icon: Music },
-              { label: "Followers", value: followers, icon: Users },
-              { label: "Following", value: following, icon: Users },
-              { label: "Likes", value: "—", icon: Heart },
-            ].map((s) => (
-              <div key={s.label} className="flex items-center gap-2">
-                <s.icon size={16} className="text-text-tertiary" />
-                <span className="text-lg font-bold text-white">{s.value}</span>
-                <span className="text-sm text-text-tertiary">{s.label}</span>
-              </div>
-            ))}
+            <div className="flex items-center gap-2">
+              <Music size={16} className="text-text-tertiary" />
+              <span className="text-lg font-bold text-white">{tracks.length}</span>
+              <span className="text-sm text-text-tertiary">Tracks</span>
+            </div>
           </div>
 
           {/* Tracks */}

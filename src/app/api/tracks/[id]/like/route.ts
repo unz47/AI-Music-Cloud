@@ -1,33 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PutCommand, DeleteCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { db, TABLE } from "@/lib/db";
+import { getAuthUser, isUnauthorized } from "@/lib/auth-guard";
 
-// いいね状態チェック
+// いいね状態チェック（認証必須）
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id: trackId } = await params;
-  const userId = req.nextUrl.searchParams.get("userId");
-  if (!userId) return NextResponse.json({ liked: false });
+  const user = await getAuthUser();
+  if (isUnauthorized(user)) return user;
 
+  const { id: trackId } = await params;
   const existing = await db.send(new GetCommand({
     TableName: TABLE.likes,
-    Key: { userId, trackId },
+    Key: { userId: user.email, trackId },
   }));
-
   return NextResponse.json({ liked: !!existing.Item });
 }
 
-// いいねトグル
+// いいねトグル（認証必須、userIdはセッションから）
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const user = await getAuthUser();
+  if (isUnauthorized(user)) return user;
+
   const { id: trackId } = await params;
-  const { userId } = await req.json();
-  if (!userId) return NextResponse.json({ error: "userId required" }, { status: 400 });
+  const userId = user.email;
 
   const existing = await db.send(new GetCommand({
     TableName: TABLE.likes,
     Key: { userId, trackId },
   }));
 
-  // トラックがDBに存在するか確認
   const track = await db.send(new GetCommand({
     TableName: TABLE.tracks,
     Key: { id: trackId },

@@ -15,5 +15,7 @@ export async function GET(req: NextRequest) {
   }));
 
   Items.sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
-  return NextResponse.json(Items);
+  // userIdをレスポンスから除外
+  const safe = Items.map(({ userId: _uid, ...rest }) => rest);
+  return NextResponse.json(safe);
 }

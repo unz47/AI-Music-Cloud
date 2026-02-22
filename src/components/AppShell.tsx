@@ -39,7 +39,7 @@ export function AppShell({
 
   useEffect(() => {
     if (!session?.user?.email) return;
-    fetch(`/api/likes?userId=${encodeURIComponent(session.user.email)}`)
+    fetch("/api/likes")
       .then((r) => r.json())
       .then((ids: string[]) => setLikedIds(new Set(ids)))
       .catch(() => {});

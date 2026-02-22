@@ -23,7 +23,6 @@ const SUPPORT_ITEMS = [
 ] as const;
 
 interface FollowItem {
-  followeeId: string;
   artistName: string;
 }
 
@@ -35,7 +34,7 @@ export function Sidebar({ open }: { open: boolean }) {
   useEffect(() => {
     const email = session?.user?.email;
     if (!email) return;
-    fetch(`/api/follows?followerId=${encodeURIComponent(email)}`)
+    fetch("/api/follows?list=1")
       .then((r) => r.json())
       .then((items: FollowItem[]) => setFollowingList(items))
       .catch(() => {});
@@ -70,7 +69,7 @@ export function Sidebar({ open }: { open: boolean }) {
             const name = f.artistName;
             return (
               <Link
-                key={f.followeeId}
+                key={name}
                 href={`/profile/${encodeURIComponent(name)}`}
                 className="flex h-10 items-center gap-3 rounded-lg px-3 text-text-secondary hover:bg-surface-3"
               >

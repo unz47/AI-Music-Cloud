@@ -5,10 +5,17 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 const BUCKET = process.env.S3_BUCKET!;
 const s3 = new S3Client({ region: process.env.AWS_REGION ?? "ap-northeast-1" });
 
+const ALLOWED_PREFIXES = ["audio/", "artwork/"];
+
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get("key");
   if (!key) {
     return NextResponse.json({ error: "key required" }, { status: 400 });
+  }
+
+  // パストラバーサル防止 & 許可プレフィックスのみ
+  if (key.includes("..") || !ALLOWED_PREFIXES.some((p) => key.startsWith(p))) {
+    return NextResponse.json({ error: "invalid key" }, { status: 400 });
   }
 
   const redirect = req.nextUrl.searchParams.get("redirect");

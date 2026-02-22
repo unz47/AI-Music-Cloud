@@ -14,7 +14,7 @@ export default function LikedPage() {
 
   useEffect(() => {
     if (!session?.user?.email) { setLoading(false); return; }
-    fetch(`/api/likes/tracks?userId=${encodeURIComponent(session.user.email)}`)
+    fetch("/api/likes/tracks")
       .then((r) => r.json())
       .then((items: Record<string, string | number>[]) => {
         setTracks(items.map((t) => ({

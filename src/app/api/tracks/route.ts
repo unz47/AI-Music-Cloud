@@ -1,24 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ScanCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import { db, TABLE } from "@/lib/db";
+import { getAuthUser, isUnauthorized } from "@/lib/auth-guard";
 
-// 曲一覧取得
+// 曲一覧取得（認証不要）
 export async function GET() {
   const { Items = [] } = await db.send(new ScanCommand({ TableName: TABLE.tracks }));
-  // 新しい順
   Items.sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
-  return NextResponse.json(Items);
+
+  // userIdをレスポンスから除外（🟡6の修正）
+  const safe = Items.map(({ userId, ...rest }) => rest);
+  return NextResponse.json(safe);
 }
 
-// 曲を登録
+// 曲を登録（認証必須）
 export async function POST(req: NextRequest) {
+  const user = await getAuthUser();
+  if (isUnauthorized(user)) return user;
+
   const body = await req.json();
   const item = {
     id: body.id ?? crypto.randomUUID(),
     title: body.title,
     artist: body.artist,
     artistImage: body.artistImage ?? null,
-    userId: body.userId ?? "anonymous",
+    userId: user.email, // セッションから強制設定（なりすまし防止）
     genre: body.genre,
     aiTool: body.aiTool,
     audioKey: body.audioKey,
