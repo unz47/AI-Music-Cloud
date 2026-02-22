@@ -5,6 +5,7 @@ import { Track } from "@/lib/mock-data";
 import { AppShell } from "@/components/AppShell";
 import { FilterBar } from "@/components/FilterBar";
 import { TrackCard } from "@/components/TrackCard";
+import { AdSense } from "@/components/AdSense";
 
 export default function Home() {
   const [tracks, setTracks] = useState<Track[]>([]);
@@ -52,6 +53,7 @@ export default function Home() {
           {filtered.length === 0 ? (
             <p className="text-text-tertiary text-sm">No tracks found.</p>
           ) : (
+          <>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
             {filtered.map((track) => (
               <TrackCard
@@ -65,6 +67,14 @@ export default function Home() {
               />
             ))}
           </div>
+          {/* インフィード AdSense バナー */}
+          <AdSense
+            slot="YYYYYYYYYY"
+            format="horizontal"
+            className="overflow-hidden rounded-xl border border-white/5 bg-surface-1"
+            style={{ height: 90 }}
+          />
+          </>
           )}
         </>
         );

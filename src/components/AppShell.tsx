@@ -2,13 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, Search } from "lucide-react";
+import { Menu, Search, Settings } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Track } from "@/lib/mock-data";
 import { AuthButton } from "@/components/AuthButton";
 import { Sidebar } from "@/components/Sidebar";
 import { PlayerBar } from "@/components/PlayerBar";
 import { UploadModal } from "@/components/UploadModal";
+import { SunoAffiliateBanner } from "@/components/SunoAffiliateBanner";
+import { AdSense } from "@/components/AdSense";
 
 export function AppShell({
   children,
@@ -98,6 +100,17 @@ export function AppShell({
             searchQuery,
           })}
         </main>
+        {/* 右サイドバー: 広告エリア */}
+        {pathname === "/" && (
+          <aside className="hidden w-[300px] shrink-0 space-y-4 overflow-y-auto p-4 pb-28 xl:block">
+            <SunoAffiliateBanner />
+            <AdSense slot="XXXXXXXXXX" style={{ width: 268, height: 250 }} />
+            <button className="flex w-full items-center justify-center gap-1 text-[11px] text-text-tertiary hover:text-text-secondary">
+              <Settings size={12} />
+              Ad Preferences
+            </button>
+          </aside>
+        )}
       </div>
 
       <PlayerBar
