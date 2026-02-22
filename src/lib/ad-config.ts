@@ -2,4 +2,4 @@
 export const ADSENSE_PUB_ID = "ca-pub-XXXXXXXXXXXXXXXX";
 
 // Suno API アフィリエイトリンク（Rewardful経由 - 紹介者の月額30%報酬）
-export const SUNO_AFFILIATE_URL = "https://www.musicapi.ai/?via=tomoya";
+export const SUNO_AFFILIATE_URL = "https://www.musicapi.ai/?via=unz47";

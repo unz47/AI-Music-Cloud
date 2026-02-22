@@ -64,6 +64,11 @@ export default function MyTracksPage() {
                   track={track}
                   onPlay={setCurrentTrack}
                   onPause={togglePlay}
+                  onDelete={async (t) => {
+                    if (!confirm(`"${t.title}" を削除しますか？`)) return;
+                    await fetch(`/api/tracks/${t.id}`, { method: "DELETE" });
+                    setTracks((prev) => prev.filter((x) => x.id !== t.id));
+                  }}
                   initialLiked={likedIds.has(track.id)}
                   isCurrent={currentTrack?.id === track.id}
                   isPlaying={currentTrack?.id === track.id && isAudioPlaying}

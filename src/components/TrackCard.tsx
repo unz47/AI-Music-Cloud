@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Play, Pause, Heart, Headphones } from "lucide-react";
+import { Play, Pause, Heart, Headphones, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Track } from "@/lib/mock-data";
 
@@ -25,6 +25,7 @@ export function TrackCard({
   track,
   onPlay,
   onPause,
+  onDelete,
   initialLiked = false,
   isPlaying = false,
   isCurrent = false,
@@ -32,6 +33,7 @@ export function TrackCard({
   track: Track;
   onPlay: (track: Track) => void;
   onPause?: () => void;
+  onDelete?: (track: Track) => void;
   initialLiked?: boolean;
   isPlaying?: boolean;
   isCurrent?: boolean;
@@ -75,6 +77,14 @@ export function TrackCard({
         <span className="relative flex h-12 w-12 items-center justify-center rounded-full bg-accent-purple text-white opacity-0 transition-opacity group-hover:opacity-100">
           {isPlaying ? <Pause size={36} fill="white" /> : <Play size={36} fill="white" />}
         </span>
+        {onDelete && (
+          <div
+            onClick={(e) => { e.stopPropagation(); onDelete(track); }}
+            className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity hover:bg-red-600 group-hover:opacity-100"
+          >
+            <Trash2 size={16} />
+          </div>
+        )}
       </div>
 
       {/* Info */}

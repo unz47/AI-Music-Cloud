@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, Search, Settings } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Track } from "@/lib/mock-data";
 import { AuthButton } from "@/components/AuthButton";
@@ -89,7 +89,7 @@ export function AppShell({
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar open={sidebarOpen} />
-        <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-8 pb-28">
+        <main className="flex flex-1 flex-col gap-6 overflow-y-auto p-8 pb-44">
           {children({
             currentTrack,
             setCurrentTrack,
@@ -99,25 +99,21 @@ export function AppShell({
             searchQuery,
           })}
         </main>
-        {/* 右サイドバー: 広告エリア */}
-        {pathname === "/" && (
-          <aside className="hidden w-[300px] shrink-0 space-y-4 overflow-y-auto p-4 pb-28 xl:block">
-            <AdSense slot="XXXXXXXXXX" style={{ width: 268, height: 250 }} />
-            <button className="flex w-full items-center justify-center gap-1 text-[11px] text-text-tertiary hover:text-text-secondary">
-              <Settings size={12} />
-              Ad Preferences
-            </button>
-          </aside>
-        )}
       </div>
 
-      <PlayerBar
-        track={currentTrack}
-        onNext={() => skipTrack(1)}
-        onPrev={() => skipTrack(-1)}
-        toggleRef={togglePlayRef}
-        onPlayingChange={setIsAudioPlaying}
-      />
+      <div className="fixed bottom-[90px] left-0 right-0 z-40">
+        <PlayerBar
+          track={currentTrack}
+          onNext={() => skipTrack(1)}
+          onPrev={() => skipTrack(-1)}
+          toggleRef={togglePlayRef}
+          onPlayingChange={setIsAudioPlaying}
+        />
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex justify-center bg-surface-0 border-t border-white/5" style={{ height: 90 }}>
+        <AdSense slot="XXXXXXXXXX" format="horizontal" className="w-full max-w-[728px] overflow-hidden" style={{ height: 90, width: 728 }} />
+      </div>
 
       <UploadModal
         open={uploadOpen}

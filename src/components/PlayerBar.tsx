@@ -118,7 +118,7 @@ export function PlayerBar({
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 flex h-20 items-center justify-between bg-surface-2 px-8">
+    <div className="flex h-20 w-full items-center justify-between bg-surface-2 px-8">
       {/* Left: Track info */}
       <div className="flex w-[280px] items-center gap-3">
         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg" style={{ backgroundColor: track.artworkKey ? undefined : track.artworkColor }}>
