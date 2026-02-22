@@ -4,7 +4,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getAuthUser, isUnauthorized } from "@/lib/auth-guard";
 
 const BUCKET = process.env.S3_BUCKET!;
-const s3 = new S3Client({ region: process.env.AWS_REGION ?? "ap-northeast-1" });
+const s3 = new S3Client({ region: process.env.APP_AWS_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1" });
 
 export async function POST(req: NextRequest) {
   const user = await getAuthUser();
