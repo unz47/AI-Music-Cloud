@@ -126,9 +126,9 @@ export function TrackCard({
           <span
             onClick={(e) => {
               e.stopPropagation();
-              if (track.userId) router.push(`/profile/${encodeURIComponent(track.userId)}`);
+              if (track.artist) router.push(`/profile/${encodeURIComponent(track.artist)}`);
             }}
-            className={`truncate text-[13px] text-text-secondary ${track.userId ? "cursor-pointer hover:text-white hover:underline" : ""}`}
+            className="truncate text-[13px] text-text-secondary cursor-pointer hover:text-white hover:underline"
           >{artist}</span>
           <span className="text-[13px] text-text-tertiary">·</span>
           <span className="shrink-0 text-xs text-text-tertiary">

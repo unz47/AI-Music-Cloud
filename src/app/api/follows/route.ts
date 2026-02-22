@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DeleteCommand, PutCommand, QueryCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, PutCommand, QueryCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { db, TABLE } from "@/lib/db";
 
 // GET /api/follows?followerId=xxx  → フォロー中一覧
@@ -41,14 +41,31 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ following: !!Item });
   }
 
-  // フォロー中一覧
+  // フォロー中一覧（artist名付き）
   if (followerId) {
     const { Items = [] } = await db.send(new QueryCommand({
       TableName: TABLE.follows,
       KeyConditionExpression: "followerId = :id",
       ExpressionAttributeValues: { ":id": followerId },
     }));
-    return NextResponse.json(Items);
+
+    // followeeIdからartist名を取得
+    const { Items: allTracks = [] } = await db.send(new ScanCommand({
+      TableName: TABLE.tracks,
+      ProjectionExpression: "userId, artist",
+    }));
+    const userArtistMap = new Map<string, string>();
+    for (const t of allTracks) {
+      if (t.userId && t.artist && !userArtistMap.has(t.userId as string)) {
+        userArtistMap.set(t.userId as string, t.artist as string);
+      }
+    }
+
+    const result = Items.map((item) => ({
+      ...item,
+      artistName: userArtistMap.get(item.followeeId as string) ?? (item.followeeId as string).split("@")[0],
+    }));
+    return NextResponse.json(result);
   }
 
   // フォロワー一覧

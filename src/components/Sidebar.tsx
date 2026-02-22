@@ -24,6 +24,7 @@ const SUPPORT_ITEMS = [
 
 interface FollowItem {
   followeeId: string;
+  artistName: string;
 }
 
 export function Sidebar({ open }: { open: boolean }) {
@@ -66,11 +67,11 @@ export function Sidebar({ open }: { open: boolean }) {
           <p className="px-3 text-xs text-text-tertiary/60">No following yet</p>
         ) : (
           followingList.slice(0, 5).map((f, i) => {
-            const name = f.followeeId.split("@")[0];
+            const name = f.artistName;
             return (
               <Link
                 key={f.followeeId}
-                href={`/profile/${encodeURIComponent(f.followeeId)}`}
+                href={`/profile/${encodeURIComponent(name)}`}
                 className="flex h-10 items-center gap-3 rounded-lg px-3 text-text-secondary hover:bg-surface-3"
               >
                 <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${AVATAR_COLORS[i % AVATAR_COLORS.length]} text-xs text-white`}>

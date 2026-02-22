@@ -9,23 +9,29 @@ import { AppShell } from "@/components/AppShell";
 import { TrackCard } from "@/components/TrackCard";
 
 export default function UserProfilePage() {
-  const { userId } = useParams<{ userId: string }>();
-  const decodedUserId = decodeURIComponent(userId);
+  const { userId: rawParam } = useParams<{ userId: string }>();
+  const artistName = decodeURIComponent(rawParam);
   const { data: session } = useSession();
   const myEmail = session?.user?.email ?? "";
 
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [profileUserId, setProfileUserId] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
 
-  const isOwnProfile = myEmail === decodedUserId;
+  const isOwnProfile = !!profileUserId && myEmail === profileUserId;
 
-  // ユーザー名（emailの@前）
-  const displayName = decodedUserId.split("@")[0];
-
+  // artist名からuserIdを逆引き & トラック取得
   useEffect(() => {
-    fetch(`/api/tracks/user?userId=${encodeURIComponent(decodedUserId)}`)
+    fetch(`/api/users/by-artist?name=${encodeURIComponent(artistName)}`)
+      .then((r) => r.json())
+      .then((d: { userId: string }) => {
+        if (d.userId) setProfileUserId(d.userId);
+      })
+      .catch(() => {});
+
+    fetch(`/api/tracks/by-artist?name=${encodeURIComponent(artistName)}`)
       .then((r) => r.json())
       .then((dbTracks: Record<string, string | number>[]) => {
         setTracks(
@@ -43,15 +49,18 @@ export default function UserProfilePage() {
             playCount: (t.playCount as number) ?? 0,
             likeCount: (t.likeCount as number) ?? 0,
             createdAt: (t.createdAt as string) ?? new Date().toISOString(),
+            userId: (t.userId as string) || undefined,
           }))
         );
       })
       .catch(() => {});
-  }, [decodedUserId]);
+  }, [artistName]);
 
   // フォロー状態 & カウント取得
   useEffect(() => {
-    fetch(`/api/follows?countFor=${encodeURIComponent(decodedUserId)}`)
+    if (!profileUserId) return;
+
+    fetch(`/api/follows?countFor=${encodeURIComponent(profileUserId)}`)
       .then((r) => r.json())
       .then((d: { followers: number; following: number }) => {
         setFollowers(d.followers);
@@ -60,24 +69,24 @@ export default function UserProfilePage() {
       .catch(() => {});
 
     if (myEmail && !isOwnProfile) {
-      fetch(`/api/follows?followerId=${encodeURIComponent(myEmail)}&followeeId=${encodeURIComponent(decodedUserId)}`)
+      fetch(`/api/follows?followerId=${encodeURIComponent(myEmail)}&followeeId=${encodeURIComponent(profileUserId)}`)
         .then((r) => r.json())
         .then((d: { following: boolean }) => setIsFollowing(d.following))
         .catch(() => {});
     }
-  }, [decodedUserId, myEmail, isOwnProfile]);
+  }, [profileUserId, myEmail, isOwnProfile]);
 
   const toggleFollow = useCallback(async () => {
-    if (!myEmail) return;
+    if (!myEmail || !profileUserId) return;
     const res = await fetch("/api/follows", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ followerId: myEmail, followeeId: decodedUserId }),
+      body: JSON.stringify({ followerId: myEmail, followeeId: profileUserId }),
     });
     const { following: nowFollowing } = await res.json();
     setIsFollowing(nowFollowing);
     setFollowers((c) => c + (nowFollowing ? 1 : -1));
-  }, [myEmail, decodedUserId]);
+  }, [myEmail, profileUserId]);
 
   return (
     <AppShell tracks={tracks}>
@@ -86,12 +95,11 @@ export default function UserProfilePage() {
           {/* Hero Section */}
           <div className="flex items-start gap-8 rounded-2xl bg-surface-1 p-8">
             <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-accent-purple text-3xl font-bold text-white">
-              {displayName[0]?.toUpperCase()}
+              {artistName[0]?.toUpperCase()}
             </span>
             <div className="flex flex-1 flex-col gap-3">
               <div>
-                <h1 className="text-2xl font-bold text-white">{displayName}</h1>
-                <p className="text-sm text-text-tertiary">@{displayName}</p>
+                <h1 className="text-2xl font-bold text-white">{artistName}</h1>
               </div>
               <p className="text-sm text-text-secondary">
                 AI music creator & curator.
