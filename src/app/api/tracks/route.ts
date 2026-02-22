@@ -5,12 +5,15 @@ import { getAuthUser, isUnauthorized } from "@/lib/auth-guard";
 
 // 曲一覧取得（認証不要）
 export async function GET() {
-  const { Items = [] } = await db.send(new ScanCommand({ TableName: TABLE.tracks }));
-  Items.sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
-
-  // userIdをレスポンスから除外（🟡6の修正）
-  const safe = Items.map(({ userId, ...rest }) => rest);
-  return NextResponse.json(safe);
+  try {
+    const { Items = [] } = await db.send(new ScanCommand({ TableName: TABLE.tracks }));
+    Items.sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
+    const safe = Items.map(({ userId, ...rest }) => rest);
+    return NextResponse.json(safe);
+  } catch (e) {
+    console.error("GET /api/tracks error:", e);
+    return NextResponse.json({ error: String(e) }, { status: 500 });
+  }
 }
 
 // 曲を登録（認証必須）
