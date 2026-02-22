@@ -139,7 +139,7 @@ export function UploadModal({
           {/* Audio file */}
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-text-secondary">Audio File *</label>
-            <input ref={fileRef} type="file" accept="audio/*" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+            <input ref={fileRef} type="file" accept="audio/*,.mp3,.wav,.flac,.m4a,.ogg,.aac" className="hidden" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
