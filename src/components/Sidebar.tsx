@@ -2,8 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 import { Home, User, Music, Heart, Clock, Settings, HelpCircle, Flag, ExternalLink } from "lucide-react";
 import { SUNO_AFFILIATE_URL } from "@/lib/ad-config";
+
+const AVATAR_COLORS = ["bg-accent-purple", "bg-accent-cyan", "bg-accent-pink", "bg-[#84cc16]"];
 
 const MY_PAGE_ITEMS = [
   { label: "Profile", icon: User, href: "/profile", disabled: false },
@@ -18,8 +22,23 @@ const SUPPORT_ITEMS = [
   { label: "Report", icon: Flag, href: "#", disabled: true },
 ] as const;
 
+interface FollowItem {
+  followeeId: string;
+}
+
 export function Sidebar({ open }: { open: boolean }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const [followingList, setFollowingList] = useState<FollowItem[]>([]);
+
+  useEffect(() => {
+    const email = session?.user?.email;
+    if (!email) return;
+    fetch(`/api/follows?followerId=${encodeURIComponent(email)}`)
+      .then((r) => r.json())
+      .then((items: FollowItem[]) => setFollowingList(items))
+      .catch(() => {});
+  }, [session?.user?.email]);
 
   return (
     <aside
@@ -43,19 +62,28 @@ export function Sidebar({ open }: { open: boolean }) {
 
         {/* FOLLOWING */}
         <p className="px-3 text-[11px] font-semibold text-text-tertiary">FOLLOWING</p>
-        {[
-          { name: "SynthMaster", color: "bg-accent-purple" },
-          { name: "LoFiBot", color: "bg-accent-cyan" },
-          { name: "BeatForge AI", color: "bg-accent-pink" },
-        ].map((u) => (
-          <button key={u.name} className="flex h-10 items-center gap-3 rounded-lg px-3 text-text-secondary hover:bg-surface-3">
-            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${u.color} text-xs text-white`}>
-              {u.name[0]}
-            </span>
-            <span className="truncate text-[13px]">{u.name}</span>
-          </button>
-        ))}
-        <p className="px-3 text-right text-xs text-accent-purple">Show more</p>
+        {followingList.length === 0 ? (
+          <p className="px-3 text-xs text-text-tertiary/60">No following yet</p>
+        ) : (
+          followingList.slice(0, 5).map((f, i) => {
+            const name = f.followeeId.split("@")[0];
+            return (
+              <Link
+                key={f.followeeId}
+                href={`/profile/${encodeURIComponent(f.followeeId)}`}
+                className="flex h-10 items-center gap-3 rounded-lg px-3 text-text-secondary hover:bg-surface-3"
+              >
+                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${AVATAR_COLORS[i % AVATAR_COLORS.length]} text-xs text-white`}>
+                  {name[0]?.toUpperCase()}
+                </span>
+                <span className="truncate text-[13px]">{name}</span>
+              </Link>
+            );
+          })
+        )}
+        {followingList.length > 5 && (
+          <p className="px-3 text-right text-xs text-accent-purple">Show more</p>
+        )}
 
         <div className="my-1 h-px bg-white/5" />
 

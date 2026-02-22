@@ -7,4 +7,5 @@ export const db = DynamoDBDocumentClient.from(client);
 export const TABLE = {
   tracks: "ai-music-tracks",
   likes: "ai-music-likes",
+  follows: "ai-music-follows",
 } as const;

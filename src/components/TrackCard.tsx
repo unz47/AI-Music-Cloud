@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Play, Pause, Heart, Headphones, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Track } from "@/lib/mock-data";
@@ -39,6 +40,7 @@ export function TrackCard({
   isCurrent?: boolean;
 }) {
   const { data: session } = useSession();
+  const router = useRouter();
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(track.likeCount);
 
@@ -121,7 +123,13 @@ export function TrackCard({
               {artist[0]}
             </span>
           )}
-          <span className="truncate text-[13px] text-text-secondary">{artist}</span>
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              if (track.userId) router.push(`/profile/${encodeURIComponent(track.userId)}`);
+            }}
+            className={`truncate text-[13px] text-text-secondary ${track.userId ? "cursor-pointer hover:text-white hover:underline" : ""}`}
+          >{artist}</span>
           <span className="text-[13px] text-text-tertiary">·</span>
           <span className="shrink-0 text-xs text-text-tertiary">
             {track.createdAt ? timeAgo(track.createdAt) : ""}

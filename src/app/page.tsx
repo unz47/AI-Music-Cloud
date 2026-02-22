@@ -30,6 +30,7 @@ export default function Home() {
           playCount: (t.playCount as number) ?? 0,
           likeCount: (t.likeCount as number) ?? 0,
           createdAt: (t.createdAt as string) ?? new Date().toISOString(),
+          userId: (t.userId as string) || undefined,
         })));
       })
       .catch(() => {});

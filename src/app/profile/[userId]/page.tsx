@@ -1,25 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Edit3, Share2, Music, Users, Heart } from "lucide-react";
+import { Edit3, Share2, Music, Users, Heart, UserPlus, UserCheck } from "lucide-react";
 import { Track } from "@/lib/mock-data";
 import { AppShell } from "@/components/AppShell";
 import { TrackCard } from "@/components/TrackCard";
 
-export default function ProfilePage() {
+export default function UserProfilePage() {
+  const { userId } = useParams<{ userId: string }>();
+  const decodedUserId = decodeURIComponent(userId);
   const { data: session } = useSession();
+  const myEmail = session?.user?.email ?? "";
+
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [followers, setFollowers] = useState(0);
   const [following, setFollowing] = useState(0);
 
-  const email = session?.user?.email ?? "";
-  const name = session?.user?.name ?? "User";
-  const image = session?.user?.image;
+  const isOwnProfile = myEmail === decodedUserId;
+
+  // ユーザー名（emailの@前）
+  const displayName = decodedUserId.split("@")[0];
 
   useEffect(() => {
-    if (!email) return;
-    fetch(`/api/tracks/user?userId=${encodeURIComponent(email)}`)
+    fetch(`/api/tracks/user?userId=${encodeURIComponent(decodedUserId)}`)
       .then((r) => r.json())
       .then((dbTracks: Record<string, string | number>[]) => {
         setTracks(
@@ -41,18 +47,37 @@ export default function ProfilePage() {
         );
       })
       .catch(() => {});
-  }, [email]);
+  }, [decodedUserId]);
 
+  // フォロー状態 & カウント取得
   useEffect(() => {
-    if (!email) return;
-    fetch(`/api/follows?countFor=${encodeURIComponent(email)}`)
+    fetch(`/api/follows?countFor=${encodeURIComponent(decodedUserId)}`)
       .then((r) => r.json())
       .then((d: { followers: number; following: number }) => {
         setFollowers(d.followers);
         setFollowing(d.following);
       })
       .catch(() => {});
-  }, [email]);
+
+    if (myEmail && !isOwnProfile) {
+      fetch(`/api/follows?followerId=${encodeURIComponent(myEmail)}&followeeId=${encodeURIComponent(decodedUserId)}`)
+        .then((r) => r.json())
+        .then((d: { following: boolean }) => setIsFollowing(d.following))
+        .catch(() => {});
+    }
+  }, [decodedUserId, myEmail, isOwnProfile]);
+
+  const toggleFollow = useCallback(async () => {
+    if (!myEmail) return;
+    const res = await fetch("/api/follows", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ followerId: myEmail, followeeId: decodedUserId }),
+    });
+    const { following: nowFollowing } = await res.json();
+    setIsFollowing(nowFollowing);
+    setFollowers((c) => c + (nowFollowing ? 1 : -1));
+  }, [myEmail, decodedUserId]);
 
   return (
     <AppShell tracks={tracks}>
@@ -60,30 +85,42 @@ export default function ProfilePage() {
         <>
           {/* Hero Section */}
           <div className="flex items-start gap-8 rounded-2xl bg-surface-1 p-8">
-            {image ? (
-              <img src={image} alt={name} className="h-24 w-24 shrink-0 rounded-full object-cover" />
-            ) : (
-              <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-accent-purple text-3xl font-bold text-white">
-                {name[0]}
-              </span>
-            )}
+            <span className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-accent-purple text-3xl font-bold text-white">
+              {displayName[0]?.toUpperCase()}
+            </span>
             <div className="flex flex-1 flex-col gap-3">
               <div>
-                <h1 className="text-2xl font-bold text-white">{name}</h1>
-                <p className="text-sm text-text-tertiary">@{email.split("@")[0]}</p>
+                <h1 className="text-2xl font-bold text-white">{displayName}</h1>
+                <p className="text-sm text-text-tertiary">@{displayName}</p>
               </div>
               <p className="text-sm text-text-secondary">
-                AI music creator & curator. Exploring the boundaries of AI-generated sound.
+                AI music creator & curator.
               </p>
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-surface-3">
-                  <Edit3 size={16} />
-                  Edit Profile
-                </button>
-                <button className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-surface-3">
-                  <Share2 size={16} />
-                  Share
-                </button>
+                {isOwnProfile ? (
+                  <>
+                    <button className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-surface-3">
+                      <Edit3 size={16} />
+                      Edit Profile
+                    </button>
+                    <button className="flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-surface-3">
+                      <Share2 size={16} />
+                      Share
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={toggleFollow}
+                    className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                      isFollowing
+                        ? "border border-white/10 text-white hover:bg-surface-3"
+                        : "bg-accent-purple text-white hover:bg-accent-purple/80"
+                    }`}
+                  >
+                    {isFollowing ? <UserCheck size={16} /> : <UserPlus size={16} />}
+                    {isFollowing ? "Following" : "Follow"}
+                  </button>
+                )}
               </div>
             </div>
           </div>

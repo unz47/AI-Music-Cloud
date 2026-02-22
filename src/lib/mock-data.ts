@@ -12,6 +12,7 @@ export type Track = {
   aiTool: string;
   createdAt: string;
   artistImage?: string;
+  userId?: string;
 };
 
 export const mockTracks: Track[] = [];
