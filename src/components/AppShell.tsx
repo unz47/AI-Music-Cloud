@@ -9,7 +9,6 @@ import { AuthButton } from "@/components/AuthButton";
 import { Sidebar } from "@/components/Sidebar";
 import { PlayerBar } from "@/components/PlayerBar";
 import { UploadModal } from "@/components/UploadModal";
-import { SunoAffiliateBanner } from "@/components/SunoAffiliateBanner";
 import { AdSense } from "@/components/AdSense";
 
 export function AppShell({
@@ -103,7 +102,6 @@ export function AppShell({
         {/* 右サイドバー: 広告エリア */}
         {pathname === "/" && (
           <aside className="hidden w-[300px] shrink-0 space-y-4 overflow-y-auto p-4 pb-28 xl:block">
-            <SunoAffiliateBanner />
             <AdSense slot="XXXXXXXXXX" style={{ width: 268, height: 250 }} />
             <button className="flex w-full items-center justify-center gap-1 text-[11px] text-text-tertiary hover:text-text-secondary">
               <Settings size={12} />

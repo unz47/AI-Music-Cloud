@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, User, Music, Heart, Clock, Settings, HelpCircle, Flag } from "lucide-react";
+import { Home, User, Music, Heart, Clock, Settings, HelpCircle, Flag, ExternalLink } from "lucide-react";
+import { SUNO_AFFILIATE_URL } from "@/lib/ad-config";
 
 const MY_PAGE_ITEMS = [
   { label: "Profile", icon: User, href: "#" },
@@ -92,6 +93,24 @@ export function Sidebar({ open }: { open: boolean }) {
             {item.label}
           </Link>
         ))}
+
+        <div className="my-1 h-px bg-white/5" />
+
+        {/* Suno Affiliate */}
+        <a
+          href={SUNO_AFFILIATE_URL}
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          className="group mx-1 mt-2 block overflow-hidden rounded-lg border border-white/5 bg-surface-1"
+        >
+          <div className="flex h-16 items-center justify-center bg-gradient-to-r from-accent-purple/30 to-accent-purple/10">
+            <span className="text-sm font-extrabold tracking-wide text-white/70">SUNO AI</span>
+          </div>
+          <div className="flex items-center justify-center gap-1 py-2 text-[11px] font-semibold text-accent-purple group-hover:text-accent-purple/80">
+            <ExternalLink size={11} />
+            無料で音楽を作る
+          </div>
+        </a>
       </div>
     </aside>
   );
