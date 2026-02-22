@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ADSENSE_PUB_ID } from "@/lib/ad-config";
+import { ADSENSE_PUB_ID, ADSENSE_ENABLED } from "@/lib/ad-config";
 
 declare global {
   interface Window {
@@ -21,12 +21,15 @@ export function AdSense({
   className?: string;
 }) {
   useEffect(() => {
+    if (!ADSENSE_ENABLED) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
       // AdSense not loaded yet
     }
   }, []);
+
+  if (!ADSENSE_ENABLED) return null;
 
   return (
     <div className={className}>
