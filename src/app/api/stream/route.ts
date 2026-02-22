@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-
-const BUCKET = process.env.S3_BUCKET!;
-const s3 = new S3Client({ region: process.env.APP_AWS_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1" });
+import { s3, BUCKET } from "@/lib/s3";
 
 const ALLOWED_PREFIXES = ["audio/", "artwork/"];
 
@@ -13,7 +11,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "key required" }, { status: 400 });
   }
 
-  // パストラバーサル防止 & 許可プレフィックスのみ
   if (key.includes("..") || !ALLOWED_PREFIXES.some((p) => key.startsWith(p))) {
     return NextResponse.json({ error: "invalid key" }, { status: 400 });
   }

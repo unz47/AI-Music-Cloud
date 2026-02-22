@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { getAuthUser, isUnauthorized } from "@/lib/auth-guard";
-
-const BUCKET = process.env.S3_BUCKET!;
-const s3 = new S3Client({ region: process.env.APP_AWS_REGION ?? process.env.AWS_REGION ?? "ap-northeast-1" });
+import { s3, BUCKET } from "@/lib/s3";
 
 export async function POST(req: NextRequest) {
   const user = await getAuthUser();
