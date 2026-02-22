@@ -21,6 +21,7 @@ export function AppShell({
     togglePlay: () => void;
     isAudioPlaying: boolean;
     likedIds: Set<string>;
+    searchQuery: string;
   }) => React.ReactNode;
   tracks: Track[];
   onTrackAdded?: (track: Track) => void;
@@ -31,6 +32,7 @@ export function AppShell({
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const togglePlayRef = useRef<(() => void) | null>(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { data: session } = useSession();
   const pathname = usePathname();
 
@@ -67,7 +69,18 @@ export function AppShell({
         {pathname === "/" && (
           <div className="flex h-10 w-[480px] items-center gap-2 rounded-lg bg-surface-2 px-4">
             <Search size={20} className="text-text-tertiary" />
-            <span className="text-sm text-text-tertiary">Search tracks &amp; artists...</span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search tracks & artists..."
+              className="flex-1 bg-transparent text-sm text-white placeholder:text-text-tertiary outline-none"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery("")} className="text-text-tertiary hover:text-white">
+                ✕
+              </button>
+            )}
           </div>
         )}
         <AuthButton onUploadClick={() => setUploadOpen(true)} />
@@ -82,6 +95,7 @@ export function AppShell({
             togglePlay: () => togglePlayRef.current?.(),
             isAudioPlaying,
             likedIds,
+            searchQuery,
           })}
         </main>
       </div>

@@ -9,6 +9,7 @@ import { TrackCard } from "@/components/TrackCard";
 export default function Home() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [filter, setFilter] = useState("All");
+  const [genre, setGenre] = useState("All");
 
   useEffect(() => {
     fetch("/api/tracks")
@@ -35,12 +36,24 @@ export default function Home() {
 
   return (
     <AppShell tracks={tracks} onTrackAdded={(t) => setTracks((prev) => [t, ...prev])}>
-      {({ currentTrack, setCurrentTrack, togglePlay, isAudioPlaying, likedIds }) => (
+      {({ currentTrack, setCurrentTrack, togglePlay, isAudioPlaying, likedIds, searchQuery }) => {
+        const filtered = tracks.filter((track) => {
+          const q = searchQuery.toLowerCase();
+          if (q && !track.title.toLowerCase().includes(q) && !track.artist.toLowerCase().includes(q) && !track.genre.toLowerCase().includes(q)) return false;
+          if (genre !== "All" && track.genre !== genre) return false;
+          return true;
+        });
+        return (
         <>
-          <FilterBar selected={filter} onSelect={setFilter} />
-          <h2 className="text-xl font-bold text-white">Trending Tracks</h2>
+          <FilterBar selected={filter} onSelect={setFilter} selectedGenre={genre} onGenreSelect={setGenre} />
+          <h2 className="text-xl font-bold text-white">
+            {searchQuery ? `Search results for "${searchQuery}"` : "Trending Tracks"}
+          </h2>
+          {filtered.length === 0 ? (
+            <p className="text-text-tertiary text-sm">No tracks found.</p>
+          ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 xl:grid-cols-5 xl:gap-6">
-            {tracks.map((track) => (
+            {filtered.map((track) => (
               <TrackCard
                 key={track.id}
                 track={track}
@@ -52,8 +65,10 @@ export default function Home() {
               />
             ))}
           </div>
+          )}
         </>
-      )}
+        );
+      }}
     </AppShell>
   );
 }
