@@ -104,11 +104,11 @@ export function Sidebar({ open }: { open: boolean }) {
           className="group mx-1 mt-2 block overflow-hidden rounded-lg border border-white/5 bg-surface-1"
         >
           <div className="flex h-16 items-center justify-center bg-gradient-to-r from-accent-purple/30 to-accent-purple/10">
-            <span className="text-sm font-extrabold tracking-wide text-white/70">SUNO AI</span>
+            <span className="text-sm font-extrabold tracking-wide text-white/70">MUSIC API</span>
           </div>
           <div className="flex items-center justify-center gap-1 py-2 text-[11px] font-semibold text-accent-purple group-hover:text-accent-purple/80">
             <ExternalLink size={11} />
-            無料で音楽を作る
+            AIで音楽を作る
           </div>
         </a>
       </div>

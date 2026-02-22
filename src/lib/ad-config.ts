@@ -1,6 +1,5 @@
 // Google AdSense パブリッシャーID（審査通過後に差し替え）
 export const ADSENSE_PUB_ID = "ca-pub-XXXXXXXXXXXXXXXX";
 
-// Suno API アフィリエイトリンク（Rewardful登録後に差し替え）
-// 登録: https://suno-api.getrewardful.com/
-export const SUNO_AFFILIATE_URL = "https://suno.com/?ref=YOUR_AFFILIATE_ID";
+// Suno API アフィリエイトリンク（Rewardful経由 - 紹介者の月額30%報酬）
+export const SUNO_AFFILIATE_URL = "https://www.musicapi.ai/?via=tomoya";
