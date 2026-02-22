@@ -6,16 +6,16 @@ import { Home, User, Music, Heart, Clock, Settings, HelpCircle, Flag, ExternalLi
 import { SUNO_AFFILIATE_URL } from "@/lib/ad-config";
 
 const MY_PAGE_ITEMS = [
-  { label: "Profile", icon: User, href: "#" },
-  { label: "My Tracks", icon: Music, href: "/my-tracks" },
-  { label: "Liked", icon: Heart, href: "/liked" },
-  { label: "History", icon: Clock, href: "#" },
-  { label: "Settings", icon: Settings, href: "#" },
+  { label: "Profile", icon: User, href: "/profile", disabled: false },
+  { label: "My Tracks", icon: Music, href: "/my-tracks", disabled: false },
+  { label: "Liked", icon: Heart, href: "/liked", disabled: false },
+  { label: "History", icon: Clock, href: "#", disabled: true },
+  { label: "Settings", icon: Settings, href: "#", disabled: true },
 ] as const;
 
 const SUPPORT_ITEMS = [
-  { label: "Help", icon: HelpCircle, href: "#" },
-  { label: "Report", icon: Flag, href: "#" },
+  { label: "Help", icon: HelpCircle, href: "#", disabled: true },
+  { label: "Report", icon: Flag, href: "#", disabled: true },
 ] as const;
 
 export function Sidebar({ open }: { open: boolean }) {
@@ -62,8 +62,16 @@ export function Sidebar({ open }: { open: boolean }) {
         {/* MY PAGE */}
         <p className="px-3 pt-2 text-[11px] font-semibold text-text-tertiary">MY PAGE</p>
         {MY_PAGE_ITEMS.map((item) => {
-          const active = item.href !== "#" && pathname === item.href;
-          return (
+          const active = !item.disabled && pathname === item.href;
+          return item.disabled ? (
+            <span
+              key={item.label}
+              className="flex h-10 items-center gap-3 rounded-lg px-3 text-[13px] text-text-tertiary/40 cursor-not-allowed"
+            >
+              <item.icon size={24} />
+              {item.label}
+            </span>
+          ) : (
             <Link
               key={item.label}
               href={item.href}
@@ -84,14 +92,13 @@ export function Sidebar({ open }: { open: boolean }) {
         {/* SUPPORT */}
         <p className="px-3 pt-2 text-[11px] font-semibold text-text-tertiary">SUPPORT</p>
         {SUPPORT_ITEMS.map((item) => (
-          <Link
+          <span
             key={item.label}
-            href={item.href}
-            className="flex h-10 items-center gap-3 rounded-lg px-3 text-[13px] text-text-secondary hover:bg-surface-3"
+            className="flex h-10 items-center gap-3 rounded-lg px-3 text-[13px] text-text-tertiary/40 cursor-not-allowed"
           >
             <item.icon size={24} />
             {item.label}
-          </Link>
+          </span>
         ))}
 
         <div className="my-1 h-px bg-white/5" />
