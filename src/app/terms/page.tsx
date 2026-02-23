@@ -17,9 +17,13 @@ export default function TermsPage() {
 
       <section className="mb-8">
         <h2 className="mb-3 text-lg font-semibold text-text-primary">2. アカウント</h2>
-        <p className="text-sm leading-relaxed">
-          本サービスの一部機能を利用するにはGoogleアカウントによるログインが必要です。アカウントの管理はユーザー自身の責任で行ってください。
-        </p>
+        <ul className="list-disc pl-5 text-sm leading-relaxed space-y-2">
+          <li>本サービスの一部機能を利用するにはGoogleアカウントによるログインが必要です。</li>
+          <li>アカウントの管理はユーザー自身の責任で行ってください。</li>
+          <li>1人のユーザーが複数のアカウントを作成することは禁止します。</li>
+          <li>13歳未満の方は本サービスを利用できません。18歳未満の方は保護者の同意が必要です。</li>
+          <li>本サービスは、規約違反があった場合、事前の通知なくアカウントを停止または削除する権利を有します。</li>
+        </ul>
       </section>
 
       <section className="mb-8">
@@ -120,30 +124,60 @@ export default function TermsPage() {
           <li>スパム、マルウェアの配布</li>
           <li>本サービスのリバースエンジニアリング</li>
           <li>自動化ツールによる大量アップロード・スクレイピング</li>
+          <li>本サービスのコンテンツを無断で再配布・転載する行為</li>
+          <li>他のユーザーへの嫌がらせ、ストーキング、脅迫行為</li>
+          <li>虚偽の情報（楽曲タイトル、アーティスト名、AIツール名等）を記載する行為</li>
         </ul>
       </section>
 
       <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold text-text-primary">7. コンテンツの削除・DMCA対応</h2>
+        <h2 className="mb-3 text-lg font-semibold text-text-primary">7. 再配布・ダウンロードの制限</h2>
         <p className="text-sm leading-relaxed">
-          本サービスは、本規約に違反するコンテンツを事前の通知なく削除する権利を有します。権利者からの著作権侵害の申し立て（DMCAテイクダウン通知等）があった場合、該当コンテンツを速やかに削除します。
+          本サービスで公開されている楽曲のストリーミング再生は無料で利用できますが、楽曲ファイルのダウンロード・複製・再配布は、投稿者本人が明示的に許可した場合を除き禁止します。他のユーザーが投稿した楽曲を自身の作品として再投稿する行為は禁止します。
         </p>
       </section>
 
       <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold text-text-primary">8. 免責事項</h2>
+        <h2 className="mb-3 text-lg font-semibold text-text-primary">8. コンテンツの削除・DMCA対応</h2>
+        <p className="mb-3 text-sm leading-relaxed">
+          本サービスは、本規約に違反するコンテンツを事前の通知なく削除する権利を有します。権利者からの著作権侵害の申し立て（DMCAテイクダウン通知等）があった場合、該当コンテンツを速やかに削除します。
+        </p>
+        <p className="text-sm leading-relaxed">
+          著作権侵害の申し立てを行う場合は、以下の情報を含めてご連絡ください：侵害されている著作物の特定、侵害コンテンツのURL、権利者の連絡先、および権利者であることの宣誓。繰り返し著作権侵害を行うユーザーのアカウントは停止されます。
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold text-text-primary">9. サービスの変更・中断・終了</h2>
+        <ul className="list-disc pl-5 text-sm leading-relaxed space-y-2">
+          <li>本サービスは、事前の通知なくサービス内容の変更、一時中断、または終了を行う場合があります。</li>
+          <li>サーバーの保守、天災、その他やむを得ない事由によりサービスが中断した場合、運営者は一切の責任を負いません。</li>
+          <li>サービス終了時は、可能な限り事前に告知し、ユーザーがコンテンツをダウンロードする猶予期間を設けるよう努めます。</li>
+        </ul>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold text-text-primary">10. 免責事項</h2>
         <ul className="list-disc pl-5 text-sm leading-relaxed space-y-2">
           <li>本サービスは「現状のまま」提供され、いかなる保証も行いません。</li>
           <li>ユーザーが投稿したコンテンツに関する法的責任はユーザー自身が負います。</li>
           <li>AI生成音楽の著作権に関する法的助言は提供しません。必要に応じて専門家にご相談ください。</li>
           <li>本サービスの利用により生じた損害について、運営者は一切の責任を負いません。</li>
+          <li>ユーザー間のトラブルについて、運営者は仲裁・解決の義務を負いません。</li>
         </ul>
       </section>
 
       <section className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold text-text-primary">9. 規約の変更</h2>
+        <h2 className="mb-3 text-lg font-semibold text-text-primary">11. 準拠法・管轄</h2>
         <p className="text-sm leading-relaxed">
-          AI生成コンテンツに関する法律・判例は急速に変化しています。本規約は予告なく変更される場合があります。変更後も本サービスを利用した場合、変更後の規約に同意したものとみなされます。
+          本規約は日本法に準拠し、日本法に従って解釈されるものとします。本サービスに関する紛争については、東京地方裁判所を第一審の専属的合意管轄裁判所とします。
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="mb-3 text-lg font-semibold text-text-primary">12. 規約の変更</h2>
+        <p className="text-sm leading-relaxed">
+          AI生成コンテンツに関する法律・判例は急速に変化しています。本規約は予告なく変更される場合があります。重要な変更がある場合は、本サービス上で通知するよう努めます。変更後も本サービスを利用した場合、変更後の規約に同意したものとみなされます。
         </p>
       </section>
     </div>
