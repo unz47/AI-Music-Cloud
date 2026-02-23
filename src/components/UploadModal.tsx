@@ -227,6 +227,11 @@ export function UploadModal({
             </div>
           </div>
 
+          {/* Notice */}
+          <p className="text-[11px] leading-relaxed text-text-tertiary">
+            アップロードすることにより、<a href="/terms" target="_blank" className="text-accent-purple hover:underline">利用規約</a>に同意したものとみなされます。他者の著作権やプライバシー権を侵害しないようにしてください。
+          </p>
+
           {/* Submit */}
           <button
             onClick={handleSubmit}
