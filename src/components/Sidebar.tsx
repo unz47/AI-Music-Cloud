@@ -146,6 +146,13 @@ export function Sidebar({ open }: { open: boolean }) {
             AIで音楽を作る
           </div>
         </a>
+
+        {/* Legal */}
+        <div className="mt-3 flex gap-2 px-3 text-[10px] text-text-tertiary/40">
+          <a href="/terms" className="hover:text-text-tertiary">利用規約</a>
+          <span>·</span>
+          <a href="/privacy" className="hover:text-text-tertiary">プライバシー</a>
+        </div>
       </div>
     </aside>
   );
