@@ -4,9 +4,10 @@ frontend:
     preBuild:
       commands:
         - npm ci
+        - env | grep -E '^(APP_|AUTH_|S3_)' >> .env.production
     build:
       commands:
-        - env | grep -E '^(APP_|AUTH_|S3_)' >> .env.production
+        - cat .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
