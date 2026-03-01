@@ -4,7 +4,7 @@ frontend:
     preBuild:
       commands:
         - npm ci
-        - env | grep -E '^(APP_|AUTH_|S3_)' >> .env.production
+        - env | grep -E '^(APP_|AUTH_|S3_)' | grep -v AUTH_URL >> .env.production
     build:
       commands:
         - cat .env.production
