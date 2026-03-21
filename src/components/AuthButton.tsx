@@ -15,10 +15,10 @@ export function AuthButton({ onUploadClick }: { onUploadClick: () => void }) {
       <div className="flex items-center gap-3">
         <button
           onClick={onUploadClick}
-          className="flex items-center gap-1.5 rounded-lg bg-accent-purple px-4 py-2 text-sm font-semibold text-white hover:bg-accent-purple-hover"
+          className="flex items-center gap-1.5 rounded-lg bg-accent-purple px-3 py-2 text-sm font-semibold text-white hover:bg-accent-purple-hover lg:px-4"
         >
-          <Plus size={24} />
-          Upload
+          <Plus size={20} />
+          <span className="hidden sm:inline">Upload</span>
         </button>
         <button
           onClick={() => signOut()}

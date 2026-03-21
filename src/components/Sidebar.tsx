@@ -26,7 +26,7 @@ interface FollowItem {
   artistName: string;
 }
 
-export function Sidebar({ open }: { open: boolean }) {
+export function Sidebar({ open, onClose }: { open: boolean; onClose?: () => void }) {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [followingList, setFollowingList] = useState<FollowItem[]>([]);
@@ -42,8 +42,11 @@ export function Sidebar({ open }: { open: boolean }) {
 
   return (
     <aside
-      className="shrink-0 overflow-hidden bg-surface-0 transition-[width] duration-300 ease-in-out"
-      style={{ width: open ? 240 : 0 }}
+      className={`shrink-0 overflow-hidden bg-surface-0 transition-[width,transform] duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-40 w-60 -translate-x-full
+        lg:relative lg:z-auto lg:translate-x-0
+        ${open ? "translate-x-0" : "lg:w-0"}
+      `}
     >
       <div className="flex w-60 flex-col gap-1 p-4 px-3">
         <Link

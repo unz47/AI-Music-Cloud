@@ -118,9 +118,9 @@ export function PlayerBar({
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="flex h-20 w-full items-center justify-between bg-surface-2 px-8">
+    <div className="flex h-[72px] w-full items-center justify-between bg-surface-2 px-4 lg:h-20 lg:px-8">
       {/* Left: Track info */}
-      <div className="flex w-[280px] items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-3 lg:w-[280px] lg:flex-none">
         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg" style={{ backgroundColor: track.artworkKey ? undefined : track.artworkColor }}>
           {track.artworkKey && (
             <img src={`/api/stream?key=${encodeURIComponent(track.artworkKey)}&redirect=1`} alt="" className="h-full w-full object-cover" />
@@ -135,8 +135,24 @@ export function PlayerBar({
         </button>
       </div>
 
+      {/* Mobile: compact play/pause */}
+      <div className="flex items-center gap-3 md:hidden">
+        <button onClick={onPrev} className="text-text-tertiary hover:text-text-primary">
+          <SkipBack size={20} />
+        </button>
+        <button
+          onClick={togglePlay}
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-purple text-white"
+        >
+          {playing ? <Pause size={20} fill="white" /> : <Play size={20} fill="white" />}
+        </button>
+        <button onClick={onNext} className="text-text-tertiary hover:text-text-primary">
+          <SkipForward size={20} />
+        </button>
+      </div>
+
       {/* Center: Controls + Progress */}
-      <div className="flex flex-1 flex-col items-center gap-2">
+      <div className="hidden flex-1 flex-col items-center gap-2 md:flex">
         <div className="flex items-center gap-6">
           <button onClick={onPrev} className="text-text-tertiary hover:text-text-primary">
             <SkipBack size={28} />
@@ -161,7 +177,7 @@ export function PlayerBar({
       </div>
 
       {/* Right: Volume */}
-      <div className="flex w-48 items-center gap-3">
+      <div className="hidden w-48 items-center gap-3 lg:flex">
         <Volume2 size={24} className="text-text-tertiary" />
         <div className="h-1 flex-1 cursor-pointer rounded-full bg-surface-5" onClick={changeVolume}>
           <div className="h-full rounded-full bg-accent-purple" style={{ width: `${volume * 100}%` }} />

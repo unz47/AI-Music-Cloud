@@ -68,7 +68,7 @@ export function TrackCard({
     >
       {/* Artwork */}
       <div
-        className="relative flex h-[200px] w-full items-center justify-center"
+        className="relative flex aspect-square w-full items-center justify-center"
         style={{ backgroundColor: track.artworkKey ? undefined : track.artworkColor }}
       >
         {track.artworkKey && (
